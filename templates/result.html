@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if from_favorites %}{% else %}Результат распознавания{% endif %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" /> 
+    <link rel="icon" href="/static/icon.png" type="image/icon">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            text-align: center;
+            margin-top: 50px;
+            background-color: #f8f9fa;
+            color: #343a40;
+            margin-top: 120px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #28a745;
+            margin-bottom: 30px;
+        }
+
+        p1 {
+            font-size: 0.9em;
+            color: #5c6064;
+        }
+
+        hr {
+            border: none;
+            height: 1px;
+            background-color: rgba(204, 204, 204, 0.5);
+            margin-top: 60px;
+            margin-bottom: 10px;
+            width: 70%;
+        }
+
+        .recognized-image {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .img2 {
+            max-width: 300px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .plant-info {
+            text-align: left;
+            margin: 0 auto;
+            max-width: 1200px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .plant-info h2 {
+            color: #28a745;
+            margin-bottom: 15px;
+        }
+
+        .plant-info p {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        .plant-info strong {
+            font-weight: 500;
+            color: #495057;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+        }
+
+        .back-button {
+            padding: 12px 25px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            margin-right: 850px;
+        }
+
+        .back-button:hover {
+            background-color: #218838;
+        }
+
+        .back-button2 {
+            padding: 12px 25px;
+            background-color: transparent;
+            color: #28a745;
+            border: 2px solid #28a745;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-left: 350px;
+        }
+
+        .back-button2:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.5);
+        }
+
+        .plant-name {
+            text-align: center;
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .plant-details,
+        .plant-care,
+        .propagation-pests,
+        .toxicity-blooming,
+        .pruning-special-care,
+        .diseases {
+            margin-bottom: 30px;
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 8px;
+            display: inline-block;
+            width: calc(48% - 20px);
+            vertical-align: top;
+        }
+
+        .plant-details:not(:nth-child(2n)),
+        .propagation-pests:not(:nth-child(2n)),
+        .pruning-special-care:not(:nth-child(2n)) {
+            margin-right: 20px;
+        }
+
+        .detail-item,
+        .care-item,
+        .propagation-item,
+        .pests-item,
+        .toxicity-item,
+        .blooming-item,
+        .pruning-item,
+        .special-care-item,
+        .disease-item {
+            margin-bottom: 10px;
+        }
+
+        h3 {
+            color: #2c3e50;
+        }
+
+        h4 {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .plant-details h3,
+        .plant-care h3,
+        .propagation-pests h3,
+        .toxicity-blooming h3,
+        .pruning-special-care h3,
+        .diseases h3 {
+            text-align: center;
+            color: #226831;
+        }
+
+        .plant-details i,
+        .plant-care i,
+        .propagation-pests i,
+        .toxicity-blooming i,
+        .pruning-special-care i,
+        .diseases i {
+            font-size: 20px;
+            color: #2c3e50;
+        }
+
+        .plant-details h3::after,
+        .plant-care h3::after,
+        .propagation-pests h3::after,
+        .toxicity-blooming h3::after,
+        .pruning-special-care h3::after,
+        .diseases h3::after {
+            content: "";
+            display: block;
+            width: 50%;
+            height: 1px;
+            background-color: #ccc;
+            margin: 10px auto;
+        }
+
+        .description {
+            margin-bottom: 20px;
+        }
+
+/* Меню */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: #e9f5e9;
+            border-bottom: 1px solid #ddd;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            box-sizing: border-box;
+            z-index: 1000;
+        }
+
+        .navbar * {
+            box-sizing: border-box;
+        }
+
+        .logo {
+            max-width: 200px;
+        }
+
+        .logo-img {
+            height: 40px;
+        }
+
+        .navbar-content {
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-content span {
+            margin-right: 20px;
+        }
+
+        .navbar-link {
+            margin-right: 900px;
+            text-decoration: none;
+            color: #28a745;
+            font-weight: bold;
+            transition: color 0.3s ease;
+            font-size: 1.1em;
+        }
+
+        .navbar-link:hover {
+            color: #218838;
+        }
+
+        .navbar-link2 {
+            margin-right: 40px;
+            text-decoration: none;
+            color: #28a745;
+            font-weight: bold;
+            transition: color 0.3s ease;
+            font-size: 1.1em;
+        }
+
+        .navbar-link2:hover {
+            color: #218838;
+        }
+
+        .navbar-link3 {
+            margin-right: 40px;
+            text-decoration: none;
+            color: #28a745;
+            font-weight: bold;
+            transition: color 0.3s ease;
+            font-size: 1.1em;
+        }
+
+        .navbar-link3:hover {
+            color: #218838;
+        }
+
+
+        .logout-button {
+            background-color: #f44336;
+            color: white;
+            padding: 5px 10px;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .button-container.from-favorites {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .add-to-favorites-container {
+            top: 120px;
+            left: 20px;
+        }
+
+        .logout-button:hover {
+            background-color: #c62828;
+        }
+
+        .mobile-menu {
+            display: none;
+        }
+
+        .menu-icon {
+            display: none;
+        }
+
+        #overlay {
+            display: none;
+        }
+
+        /* Адаптивность для мобильных устройств */
+        @media (max-width: 768px) {
+            .button-container.from-favorites {
+                justify-content: center;
+            }
+
+            .back-button,
+            .back-button2 {
+                padding: 11px 15px;
+                font-size: 14px;
+                margin-right: 10px;
+                margin-left: 10px;
+                display: block;
+                width: calc(90% - 20px);
+                box-sizing: border-box;
+                text-align: center;
+                margin-top: 10px;
+            }
+
+            .navbar-content {
+                display: none;
+            }
+
+            .navbar {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 20px;
+                background-color: #e9f5e9;
+                border-bottom: 1px solid #ddd;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                box-sizing: border-box;
+                z-index: 1000;
+            }
+
+            .menu-icon {
+                display: block;
+                cursor: pointer;
+                font-size: 24px;
+            }
+
+            .mobile-menu {
+                display: none;
+                flex-direction: column;
+                position: fixed;
+                top: 0;
+                right: 0;
+                background-color: #e9f5e9;
+                box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+                width: 100%;
+                max-width: 330px;
+                height: 100vh;
+                padding: 40px 0 0;
+                transform: translateX(100%);
+                transition: transform 0.3s ease;
+                z-index: 1000;
+            }
+
+            .mobile-menu.show {
+                display: flex;
+                transform: translateX(0);
+            }
+
+            .mobile-menu.hide {
+                transform: translateX(100%);
+            }
+
+            .mobile-menu a {
+                padding: 20px 15px;
+                text-decoration: none;
+                color: #28a745;
+                font-weight: bold;
+                white-space: nowrap;
+                margin-bottom: 10px;
+                display: block;
+            }
+
+            .mobile-menu span {
+                margin-bottom: 50px;
+                font-size: 20px;
+            }
+
+            .overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                z-index: 999;
+                transition: opacity 0.3s ease;
+                opacity: 0;
+            }
+
+            .overlay.show {
+                display: block;
+                opacity: 1;
+            }
+
+            .navbar .logout-button {
+                background-color: #f44336;
+                color: white;
+                padding: 5px 10px;
+                text-decoration: none;
+                border-radius: 5px;
+                transition: background-color 0.3s ease;
+                margin-top: 150px;
+                margin-bottom: 0px;
+                max-width: 150px;
+                margin-left: 100px;
+            }
+
+            .plant-info {
+                max-width: 90%;
+                padding: 15px;
+            }
+            
+            .plant-details,
+            .plant-care,
+            .propagation-pests,
+            .toxicity-blooming,
+            .pruning-special-care,
+            .diseases  {
+                width: calc(100% - 20px);
+                display: block;
+                margin-bottom: 20px;
+            }
+
+            .plant-details h3,
+            .plant-care h3,
+            .propagation-pests h3,
+            .toxicity-blooming h3,
+            .pruning-special-care h3,
+            .diseases h3 {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo">
+            <a href="{{ url_for('index') }}">
+                <img src="{{ url_for('static', filename='logo.png') }}" alt="Логотип" class="logo-img">
+            </a>
+        </div>
+        <div class="menu-icon" onclick="toggleMenu()"> &#9776; </div>
+        <div class="navbar-content">
+            <a href="/index#about" class="navbar-link2">О нас</a>
+            <a href="#contacts" class="navbar-link3">Контакты</a>
+            <a href="{{ url_for('favorites') }}" class="navbar-link">Избранное</a>
+            <span>Добро пожаловать, {{ username }}!</span>
+            <a href="{{ url_for('logout') }}" class="logout-button">Выход</a>
+        </div>
+        <div class="mobile-menu" id="mobileMenu">
+            <span>Добро пожаловать, {{ username }}!</span>
+            <div style="border-top: 1px solid #28a745; width: 90%; margin: 5px auto 100px;"></div>
+            <div style="border-top: 1px solid #c4c7c4; width: 100%; margin: 10px 0;"></div>
+            <a href="/index#about" class="navbar-link">О нас</a>
+            <div style="border-top: 1px solid #c4c7c4; width: 100%; margin: 10px 0;"></div>
+            <a href="#contacts" class="navbar-link">Контакты</a>
+            <div style="border-top: 1px solid #c4c7c4; width: 100%; margin: 10px 0;"></div>
+            <a href="{{ url_for('favorites') }}" class="navbar-link">Избранное</a>
+            <div style="border-top: 1px solid #c4c7c4; width: 100%; margin: 10px 0;"></div>
+            <a href="{{ url_for('logout') }}" class="logout-button">Выход</a>
+            <div style="border-top: 1px solid #28a745; width: 90%; margin: 100px auto 30px;"></div>
+        </div>
+        <div id="overlay" class="overlay"></div> 
+    </div>
+
+    {% if image_path and not from_favorites %}
+    <h1>Результат распознавания</h1>
+    {% endif %}
+
+    {% if image_path and not from_favorites %}
+    <div class="recognized-image">
+        <img src="{{ url_for('send_image', filename=image_path) }}" alt="Распознанное растение" class="img2">
+    </div>
+    {% endif %}
+ 
+    {% if plant %}
+    <div class="plant-info">
+        <h2 class="plant-name"><i class="fas fa-leaf"></i> {{ plant.name | capitalize }}</h2>
+
+        <div class="description">
+            <p>{{ plant.description }}</p>
+        </div>
+        <div class="plant-details">
+            <h3>Условия ухода</h3>
+            <div class="detail-item">
+                <h4><i class="fas fa-lightbulb"></i> Освещение</h4>
+                <p>{{ plant.lighting }}</p>
+            </div>
+            <div class="detail-item">
+                <h4><i class="fas fa-tint"></i> Полив</h4>
+                <p>{{ plant.watering }}</p>
+            </div>
+            <div class="detail-item">
+                <h4><i class="fas fa-thermometer-half"></i> Температура</h4>
+                <p>{{ plant.temperature }}</p>
+            </div>
+            <div class="detail-item">
+                <h4><i class="fas fa-cloud-rain"></i> Влажность</h4>
+                <p>{{ plant.humidity }}</p>
+            </div>
+        </div>
+
+        <div class="plant-care">
+            <h3>Удобрения и пересадка</h3>
+            <div class="care-item">
+                <h4><i class="fas fa-seedling"></i> Удобрения</h4>
+                <p>{{ plant.fertilizing }}</p>
+            </div>
+            <div class="care-item">
+                <h4><i class="fas fa-exchange-alt"></i> Пересадка</h4>
+                <p>{{ plant.transplanting }}</p>
+            </div>
+            <div class="care-item">
+                <h4><i class="fas fa-mountain"></i> Тип почвы</h4>
+                <p>{{ plant.soil_type }}</p>
+            </div>
+        </div>
+
+        <div class="propagation-pests">
+            <h3>Размножение и вредители</h3>
+            <div class="propagation-item">
+                <h4><i class="fas fa-clone"></i> Размножение</h4>
+                <p>{{ plant.propagation }}</p>
+            </div>
+            <div class="pests-item">
+                <h4><i class="fas fa-bug"></i> Распространенные вредители</h4>
+                <p>{{ plant.common_pests }}</p>
+            </div>
+        </div>
+
+        <div class="toxicity-blooming">
+            <h3>Токсичность и цветение</h3>
+            <div class="toxicity-item">
+                <h4><i class="fas fa-paw"></i> Токсичность для питомцев</h4>
+                <p>{{ plant.toxicity_to_pets }}</p>
+            </div>
+            <div class="blooming-item">
+                <h4><i class="fa-solid fa-exclamation-triangle"></i> Сезон цветения</h4>
+                <p>{{ plant.blooming_season }}</p>
+            </div>
+        </div>
+
+        <div class="pruning-special-care">
+            <h3>Обрезка и особый уход</h3>
+            <div class="pruning-item">
+                <h4><i class="fas fa-cut"></i> Обрезка</h4>
+                <p>{{ plant.pruning }}</p>
+            </div>
+            <div class="special-care-item">
+                <h4><i class="fas fa-heart"></i> Особый уход</h4>
+                <p>{{ plant.special_care }}</p>
+            </div>
+        </div>
+
+        <div class="diseases">
+            <h3>Болезни</h3>
+            <div class="disease-item">
+                <h4><i class="fas fa-stethoscope"></i> Описание</h4>
+                <p>{{ plant.diseases_description }}</p>
+            </div>
+            <div class="disease-item">
+                <h4><i class="fas fa-shield-alt"></i> Профилактика</h4>
+                <p>{{ plant.diseases_prevention }}</p>
+            </div>
+            <div class="disease-item">
+                <h4><i class="fas fa-medkit"></i> Лечение</h4>
+                <p>{{ plant.diseases_treatment }}</p>
+            </div>
+        </div>
+    </div>
+    {% else %}
+        <p>Информация о растении не найдена.</p>
+    {% endif %}
+
+    <div class="button-container {% if from_favorites %}from-favorites{% endif %}">
+
+        {% if not from_favorites %}
+        <div class="add-to-favorites-container">
+            <form action="{{ url_for('add_to_favorites') }}" method="POST">
+                <input type="hidden" name="plant_id" value="{{ plant.id }}">
+                <input type="hidden" name="plant_name" value="{{ plant.name }}">
+                <input type="hidden" name="image_path" value="{{ image_path }}">
+                <button type="submit" class="back-button2">Добавить в избранное</button>
+            </form>
+        </div>
+        {% endif %}
+    
+        <a href="{{ url_for('index') }}" class="back-button">Вернуться к загрузке</a>
+    </div>
+    <hr>
+    <span id="contacts">
+        <p1>© 2025 PlantPal. Все права защищены.</p1>
+        <a href="https://github.com/1Polina18/plants.git" target="_blank"><i class="fab fa-github" style="font-size: 28px; color: black;"></i></a>
+        <br>
+        <br>
+        <p1>Контакты: plants@mail.com</p1>
+    </span>   
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <div id="notification" style="position: fixed; top: 20px; right: 20px; background-color: #28a745; color: white; padding: 10px 20px; border-radius: 5px; z-index: 1000;">
+            {{ messages[0] }}
+        </div>
+    {% endif %}
+    {% endwith %}
+
+<script>
+    // Находим все ссылки с якорями
+    document.addEventListener("DOMContentLoaded", function() {
+        const links = document.querySelectorAll('a[href^="#"]');
+
+        links.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    });
+
+    // Работа меню
+    function toggleMenu() {
+        const menu = document.getElementById('mobileMenu');
+        const overlay = document.getElementById('overlay');
+        if (menu.classList.contains('show')) {
+            menu.classList.remove('show');
+            menu.classList.add('hide');
+            overlay.classList.remove('show');
+            setTimeout(() => {
+                menu.style.display = 'none';
+                overlay.style.display = 'none';
+            }, 300);
+        } else {
+            menu.style.display = 'flex';
+            overlay.style.display = 'block';
+            setTimeout(() => {
+                menu.classList.remove('hide');
+                menu.classList.add('show');
+                overlay.classList.add('show');
+            }, 10);
+        }
+    }
+
+    // Закрытие меню при нажатии вне его
+    document.addEventListener('click', (event) => {
+        const menu = document.getElementById('mobileMenu');
+        const menuIcon = document.querySelector('.menu-icon');
+        if (!menu.contains(event.target) && !menuIcon.contains(event.target)) {
+            if (menu.classList.contains('show')) {
+                toggleMenu();
+            }
+        }
+    });
+
+    // Убираем уведомление через 3 секунды
+    setTimeout(() => {
+        const notification = document.getElementById('notification');
+        if (notification) {
+            notification.style.opacity = '0';
+            setTimeout(() => {
+                notification.remove();
+            }, 500);
+        }
+    }, 3000);
+</script>
+</body>
+</html>

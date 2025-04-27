@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Избранное</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="/static/icon.png" type="image/icon">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            text-align: center;
+            margin-top: 120px;
+            background-color: #f8f9fa;
+            color: #343a40;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #28a745;
+            margin-bottom: 20px;
+            animation: fadeIn 1s ease-in-out;
+            font-size: 2.5em;
+        }
+
+        p {
+            font-size: 1.1em;
+        }
+
+        /* Меню */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: #e9f5e9;
+            border-bottom: 1px solid #ddd;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            box-sizing: border-box;
+            z-index: 1000;
+        }
+
+        .navbar * {
+            box-sizing: border-box;
+        }
+
+        .logo {
+            max-width: 200px;
+        }
+
+        .logo-img {
+            height: 40px;
+        }
+
+        .navbar-content {
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-content span {
+            margin-right: 20px;
+        }
+
+        .navbar-link {
+            margin-right: 900px;
+            text-decoration: none;
+            color: #28a745;
+            font-weight: bold;
+            transition: color 0.3s ease;
+            font-size: 1.1em;
+        }
+
+        .navbar-link:hover {
+            color: #218838;
+        }
+
+        .navbar-link2 {
+            margin-right: 40px;
+            text-decoration: none;
+            color: #28a745;
+            font-weight: bold;
+            transition: color 0.3s ease;
+            font-size: 1.1em;
+        }
+
+        .navbar-link2:hover {
+            color: #218838;
+        }
+
+        .navbar-link3 {
+            margin-right: 40px;
+            text-decoration: none;
+            color: #28a745;
+            font-weight: bold;
+            transition: color 0.3s ease;
+            font-size: 1.1em;
+        }
+
+        .navbar-link3:hover {
+            color: #218838;
+        }
+
+        .logout-button {
+            background-color: #f44336;
+            color: white;
+            padding: 5px 10px;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .logout-button:hover {
+            background-color: #c62828;
+        }
+
+        /* Кнопка Вернуться на Главную */
+        .back-button {
+            padding: 12px 25px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            margin-top: 30px;
+        }
+
+        .back-button:hover {
+            background-color: #218838 ;
+        }
+      
+         /* Стили для страницы избранных растений */
+        .favorites-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+      
+        .favorites-title {
+            text-align: center;
+            color: #28a745;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+      
+        .favorites-list {
+            list-style-type: none; 
+            padding: 0; 
+        }
+      
+        .favorites-item {
+            background-color: #ffffff; 
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 10px; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: transform 0.2s; 
+        }
+      
+        .favorites-item:hover {
+            transform :scale(1.02) ; 
+        }
+      
+        .no-favorites-message {
+            text-align: center;
+            color: #dc3545; 
+            font-size: 1.2em;
+        }
+      
+      
+        .plant-number {
+            font-size: 5em;
+            color: #28a745;
+            margin-right: 20px;
+            align-self: center;
+            font-weight: lighter;
+        }
+     
+        .plant-image {
+            width: 50px;
+            height: auto;
+            vertical-align: text-bottom;
+            margin-right: 10px;
+        }
+     
+        button.remove-button {
+            background-color: #c9473e; 
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 60px;
+            margin-right: 20px;
+            margin-left: 40px;
+            transition: background-color 0.3s ease;
+        }
+
+        button.remove-button:hover {
+            background-color: #c62828;
+        }
+
+        p1 {
+            font-size: 0.9em;
+            color: #5c6064;
+        }
+
+        hr {
+            border: none;
+            height: 1px;
+            background-color: rgba(204, 204, 204, 0.5);
+            margin-top: 60px;
+            margin-bottom: 10px;
+            width: 70%;
+        }
+
+        .plant-link {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            color: #28a745;
+            font-weight: bold;
+            text-decoration: none;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .plant-link:hover {
+            background-color: #e9f5e9;
+            transform: translateY(-2px);
+        }
+
+        .plant-image {
+            max-width: 300px;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            margin-bottom: 10px;
+            width: 100px;
+            height: auto;
+            margin-right: 10px;
+        }
+
+        .description {
+            margin-top: 50px;
+            margin-bottom: 80px;
+            font-size: 1.2em;
+            color: #5c6064;
+        }
+
+        .plant-info {
+            display:flex;
+            align-items:center;
+        }
+
+        .mobile-menu {
+            display: none;
+        }
+
+        .menu-icon {
+            display: none;
+        }
+
+        #overlay {
+            display: none;
+        }
+
+        .favorites-item-content {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+        }
+
+        /* Адаптивность для мобильных устройств */
+        @media (max-width: 768px) {
+            .plant-number {
+                font-size: 2em;
+                color: #28a745;
+                font-weight: lighter;
+                margin-right: 300px;
+            }
+
+            .favorites-item-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .plant-image {
+                width: 100px;
+                height: auto;
+                margin-bottom: 10px;
+                margin-right: 0px;
+            }
+
+            .plant-info {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .plant-link {
+                display: block;
+                margin-bottom: 10px;
+            }
+
+            button.remove-button {
+                margin-top: 10px;
+                margin-left: auto;
+                padding: 8px;
+            }
+
+            .navbar-content {
+                display: none;
+            }
+
+            .navbar {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 20px;
+                background-color: #e9f5e9;
+                border-bottom: 1px solid #ddd;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                box-sizing: border-box;
+                z-index: 1000;
+            }
+
+            .menu-icon {
+                display: block;
+                cursor: pointer;
+                font-size: 24px;
+            }
+
+            .mobile-menu {
+                display: none;
+                flex-direction: column;
+                position: fixed;
+                top: 0;
+                right: 0;
+                background-color: #e9f5e9;
+                box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+                width: 100%;
+                max-width: 330px;
+                height: 100vh;
+                padding: 40px 0 0;
+                transform: translateX(100%);
+                transition: transform 0.3s ease;
+                z-index: 1000;
+            }
+
+            .mobile-menu.show {
+                display: flex;
+                transform: translateX(0);
+            }
+
+            .mobile-menu.hide {
+                transform: translateX(100%);
+            }
+
+            .mobile-menu a {
+                padding: 20px 15px;
+                text-decoration: none;
+                color: #28a745;
+                font-weight: bold;
+                white-space: nowrap;
+                margin-bottom: 10px;
+                display: block;
+            }
+
+            .mobile-menu span {
+                margin-bottom: 50px;
+                font-size: 20px;
+            }
+
+            .overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                z-index: 999;
+                transition: opacity 0.3s ease;
+                opacity: 0;
+            }
+
+            .overlay.show {
+                display: block;
+                opacity: 1;
+            }
+
+            .navbar .logout-button {
+                background-color: #f44336;
+                color: white;
+                padding: 5px 10px;
+                text-decoration: none;
+                border-radius: 5px;
+                transition: background-color 0.3s ease;
+                margin-top: 150px;
+                margin-bottom: 0px;
+                max-width: 150px;
+                margin-left: 100px;
+            }
+        }
+    </style>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo">
+            <a href="{{ url_for('index') }}">
+                <img src="{{ url_for('static', filename='logo.png') }}" alt="Логотип" class="logo-img">
+            </a>
+        </div>
+        <div class="menu-icon" onclick="toggleMenu()"> &#9776; </div>
+        <div class="navbar-content">
+            <a href="/index#about" class="navbar-link2">О нас</a>
+            <a href="#contacts" class="navbar-link3">Контакты</a>
+            <a href="{{ url_for('favorites') }}" class="navbar-link">Избранное</a>
+            <span>Добро пожаловать, {{ username }}!</span>
+            <a href="{{ url_for('logout') }}" class="logout-button">Выход</a>
+        </div>
+        <div class="mobile-menu" id="mobileMenu">
+            <span>Добро пожаловать, {{ username }}!</span>
+            <div style="border-top: 1px solid #28a745; width: 90%; margin: 5px auto 100px;"></div>
+            <div style="border-top: 1px solid #c4c7c4; width: 100%; margin: 10px 0;"></div>
+            <a href="/index#about" class="navbar-link">О нас</a>
+            <div style="border-top: 1px solid #c4c7c4; width: 100%; margin: 10px 0;"></div>
+            <a href="#contacts" class="navbar-link">Контакты</a>
+            <div style="border-top: 1px solid #c4c7c4; width: 100%; margin: 10px 0;"></div>
+            <a href="{{ url_for('favorites') }}" class="navbar-link">Избранное</a>
+            <div style="border-top: 1px solid #c4c7c4; width: 100%; margin: 10px 0;"></div>
+            <a href="{{ url_for('logout') }}" class="logout-button">Выход</a>
+            <div style="border-top: 1px solid #28a745; width: 90%; margin: 100px auto 30px;"></div>
+        </div>
+        <div id="overlay" class="overlay"></div>
+    </div>
+
+   <div class="favorites-container">
+       <h1 class="favorites-title">Избранные растения</h1>
+       <div class="description">
+        <p>На этой странице вы можете увидеть список ваших избранных растений. Вы можете просмотреть информацию о каждом растении, а также удалить его из списка избранных, если это необходимо.</p>
+       </div>
+
+       {% if plants %}
+       <ul class="favorites-list">
+           {% for plant in plants %}
+           <li class="favorites-item">
+               <div class="favorites-item-content">
+                   <span class="plant-number">{{ loop.index }}</span>
+                   
+                   <div class="plant-info">
+                        {% if plant[1] == "алоэ вера" %}
+                        <img src="{{ url_for('send_data', plant_name='алоэ вера', filename='алоэ вера растение_35.jpg') }}" alt="{{ plant.name }}" class="plant-image">
+                        {% else %}
+                        <img src="{{ url_for('send_data', plant_name=plant[1], filename=plant[1] + '_1.jpg') }}" alt="{{ plant.name }}" class="plant-image">
+                        {% endif %}
+                    
+                        <a href="{{ url_for('result', plant_name=plant[1], image_path=plant[3], from_favorites=True) }}" class="plant-link" style="text-decoration: none; display: flex; align-items: center; width: 100%; min-height: 100px;">
+                            <span style="font-size: 1.5em; margin-right: 10px;">{{ plant[1] }}</span>
+                            <div style="border-left: 1px solid #28a745; height: 60px; margin: 0 10px;"></div>
+                            <span style="flex: 1; word-wrap: break-word; min-height: 60px;">{{ plant[2][:130] }}{{ '...' if plant[2]|length > 130 else '' }}</span>
+                        </a>
+                   </div>
+
+                   <form action="{{ url_for('remove_from_favorites') }}" method="post" style="display:inline;">
+                       <input type="hidden" name="plant_id" value="{{ plant[0] }}">
+                       <button type="submit" class="remove-button" onclick="return confirm('Вы уверены, что хотите удалить это растение из избранного?');">Удалить из избранного</button>
+                   </form>
+               </div>
+            </li>
+           {% endfor %}
+       </ul>
+
+       {% else %}
+           <p class="no-favorites-message">У вас нет избранных растений.</p>
+       {% endif %}
+
+       <a href="{{ url_for('index') }}" class="back-button">Вернуться на Главную</a>
+   </div>
+   <hr>
+   <span id="contacts">
+       <p1>© 2025 PlantPal. Все права защищены.</p1>
+       <a href="https://github.com/1Polina18/plants.git" target="_blank"><i class="fab fa-github" style="font-size: 28px; color: black;"></i></a>
+       <br>
+       <br>
+       <p1>Контакты: plants@mail.com</p1>
+   </span> 
+</body>
+<script>
+    // Работа меню
+    function toggleMenu() {
+        const menu = document.getElementById('mobileMenu');
+        const overlay = document.getElementById('overlay');
+        if (menu.classList.contains('show')) {
+            menu.classList.remove('show');
+            menu.classList.add('hide');
+            overlay.classList.remove('show');
+            setTimeout(() => {
+                menu.style.display = 'none';
+                overlay.style.display = 'none';
+            }, 300);
+        } else {
+            menu.style.display = 'flex';
+            overlay.style.display = 'block';
+            setTimeout(() => {
+                menu.classList.remove('hide');
+                menu.classList.add('show');
+                overlay.classList.add('show');
+            }, 10);
+        }
+    }
+
+    // Закрытие меню при нажатии вне его
+    document.addEventListener('click', (event) => {
+        const menu = document.getElementById('mobileMenu');
+        const menuIcon = document.querySelector('.menu-icon');
+        if (!menu.contains(event.target) && !menuIcon.contains(event.target)) {
+            if (menu.classList.contains('show')) {
+                toggleMenu();
+            }
+        }
+    });
+
+    // Находим все ссылки с якорями
+    document.addEventListener("DOMContentLoaded", function() {
+        const links = document.querySelectorAll('a[href^="#"]');
+
+        links.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth' 
+                    });
+                }
+            });
+        });
+    });
+</script>
+</html>

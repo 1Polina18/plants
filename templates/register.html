@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="icon" href="/static/icon.png" type="image/icon">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            text-align: center;
+            margin-top: 50px;
+            background-color: #f8f9fa;
+            color: #343a40;
+            margin-top: 120px;
+        }
+
+        p1 {
+            font-size: 0.9em;
+            color: #5c6064;
+        }
+
+        hr {
+            border: none;
+            height: 1px;
+            background-color: rgba(204, 204, 204, 0.5);
+            margin-top: 120px;
+            margin-bottom: 10px;
+            width: 70%;
+        }
+        
+        h1 {
+            color: #28a745;
+            margin-bottom: 20px;
+            animation: fadeIn 1s ease-in-out;
+            font-size: 2.5em;
+        }
+
+        .form-container {
+            max-width: 400px;
+            margin: auto;
+        }
+
+        button.btn-primary {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+
+        p {
+            font-size: 1.1em;
+        }
+
+        ul li {
+            font-size: 1.1em;
+            color: #343a40;
+        }
+
+        ul li strong {
+            font-weight: bold;
+            color: inherit;
+        }
+
+        .login-link {
+            margin-top: 15px;
+        }
+
+        .error-message {
+            color: red;
+            margin-top: 10px;
+        }
+
+    </style>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Регистрация</h1>
+        <div class="form-container">
+            <form id="registrationForm" method="POST">
+                {{ form.csrf_token }}
+                <div class="form-group">
+                    <label for="username">Имя пользователя</label>
+                    {{ form.username(class="form-control", id="username", required=True) }}
+                    {% for error in form.username.errors %}
+                        <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="form-group">
+                    <label for="email">Электронная почта</label>
+                    {{ form.email(class="form-control", id="email", required=True) }}
+                    {% for error in form.email.errors %}
+                        <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="form-group">
+                    <label for="password">Пароль</label>
+                    {{ form.password(class="form-control", id="password", required=True) }}
+                    {% for error in form.password.errors %}
+                        <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="form-group">
+                    <label for="confirm_password">Повторите пароль</label>
+                    {{ form.confirm_password(class="form-control", id="confirm_password", required=True) }}
+                    {% for error in form.confirm_password.errors %}
+                        <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+            </form>
+            <p class="login-link">
+                Есть учетная запись? <a href="{{ url_for('login') }}">Войти</a>
+            </p> 
+            <div class="mt-3">
+                <a href="{{ url_for('home') }}">Вернуться на главную</a>
+            </div>
+        </div>
+    </div>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
+        <div class="alert alert-info">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+    <hr>
+    <span id="contacts"> <!-- Секция "Контакты" -->
+        <p1>© 2025 PlantPal. Все права защищены.</p1>
+        <a href="https://github.com/1Polina18/plants.git" target="_blank"><i class="fab fa-github" style="font-size: 28px; color: black;"></i></a>
+        <br>
+        <br>  <!-- Добавляем разрыв строки -->
+        <p1>Контакты: plants@mail.com</p1>
+    </span> 
+</body>
+</html>

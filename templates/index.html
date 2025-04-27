@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Интерактивный помощник по уходу за растениями</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="/static/icon.png" type="image/icon">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            text-align: center;
+            margin-top: 50px;
+            background-color: #f8f9fa;
+            color: #343a40;
+            margin-top: 120px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #28a745;
+            margin-bottom: 20px;
+            animation: fadeIn 1s ease-in-out;
+            font-size: 2.5em;
+        }
+
+        p {
+            font-size: 1.1em;
+        }
+
+        p1 {
+            font-size: 0.9em;
+            color: #5c6064;
+        }
+
+        hr {
+            border: none;
+            height: 1px;
+            background-color: rgba(204, 204, 204, 0.5);
+            margin-top: 60px;
+            margin-bottom: 10px;
+            width: 70%;
+        }
+
+        ul li {
+            font-size: 1.1em;
+            color: #343a40;
+        }
+
+        ul li strong {
+            font-weight: bold;
+            color: inherit;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .upload-container {
+            border: 2px dashed #ced4da;
+            padding: 30px;
+            margin: 20px auto;
+            max-width: 400px;
+            cursor: pointer;
+            position: relative;
+            border-radius: 10px;
+        }
+
+        .upload-container:hover {
+            border-color: #28a745;
+        }
+
+        #fileInput,
+        #fileInputMobile {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .mobile {
+            display: none;
+        }
+        .upload-icon {
+            font-size: 48px;
+            color: #ced4da;
+            margin-bottom: 10px;
+        }
+
+        .upload-text {
+            font-size: 16px;
+            color: #6c757d;
+        }
+ 
+        button {
+            padding: 12px 25px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .message {
+            color: #dc3545;
+            margin-bottom: 15px;
+        }
+
+        #imagePreview {
+            max-width: 300px;
+            margin: 20px auto;
+            display: none;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #loadingIndicator {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #28a745;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Меню */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: #e9f5e9;
+            border-bottom: 1px solid #ddd;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            box-sizing: border-box;
+            z-index: 1000;
+        }
+
+        .navbar * {
+            box-sizing: border-box;
+        }
+
+        .logo {
+            max-width: 200px;
+        }
+
+        .logo-img {
+            height: 40px;
+        }
+
+        .navbar-content {
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-content span {
+            margin-right: 20px;
+        }
+
+        .navbar-link {
+            margin-right: 900px;
+            text-decoration: none;
+            color: #28a745;
+            font-weight: bold;
+            transition: color 0.3s ease;
+            font-size: 1.1em;
+        }
+
+        .navbar-link:hover {
+            color: #218838;
+        }
+
+        .navbar-link2 {
+            margin-right: 40px;
+            text-decoration: none;
+            color: #28a745;
+            font-weight: bold;
+            transition: color 0.3s ease;
+            font-size: 1.1em;
+        }
+
+        .navbar-link2:hover {
+            color: #218838;
+        }
+
+        .navbar-link3 {
+            margin-right: 40px;
+            text-decoration: none;
+            color: #28a745;
+            font-weight: bold;
+            transition: color 0.3s ease;
+            font-size: 1.1em;
+        }
+
+        .navbar-link3:hover {
+            color: #218838;
+        }
+
+        .logout-button {
+            background-color: #f44336;
+            color: white;
+            padding: 5px 10px;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .logout-button:hover {
+            background-color: #c62828;
+        }
+
+        /* Секция с описанием */
+        .description-section {
+            background-color: #e9f5e9;
+            padding: 0px;
+            margin-top: 40px;
+            text-align: center;
+            display: flex;
+            align-items: stretch;
+        }
+        .description-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 70px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .description-text {
+            flex: 1 1 50%;
+            text-align: left;
+            max-width: 50%;
+        }
+        
+        .description-image {
+            flex: 0 0 50%;
+            max-width: 50%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        h2 {
+            color: #28a745;
+            margin-bottom: 10px;
+        }
+
+        /* Преимущества */
+        .advantages-section {
+            margin-top: 150px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            width: 100%;         
+            max-width: 1200px;   
+            margin: 120px auto 0;
+            gap: 120px; 
+            position: relative;
+        }
+        
+        .advantage-item {
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            flex: 1;
+            text-align: center;
+            height: 350px;
+        }
+        
+        .advantage-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 2px solid #28a745;
+            color: #343a40;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-align: center;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        
+        .advantage-description {
+            text-align: center;
+            font-size: 1em;
+            color: #343a40;
+        }
+
+        /* Карточки-рекомендации */
+        .intro-title {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 60px;
+            margin-top: 100px;
+            color: #218838;
+        }
+        
+        .advice-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #e0f7e0;
+            padding: 40px;
+            border-radius: 8px;
+        }
+
+        .advice-container {
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 20px;
+        }
+
+        .advice-card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.0em;
+        }
+
+        .advice-card.active {
+            display: flex;
+            align-items: center;
+        }
+
+        .advice-icon {
+            font-size: 42px;
+            color: #28a745;
+            margin-right: 15px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .pagination button {
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5em;
+            margin: 0 10px;
+        }
+
+        .pagination .page-numbers {
+            display: flex;
+            align-items: center;
+        }
+
+        .page-number {
+            margin: 0 10px;
+            font-size: 1.5em;
+            cursor: pointer;
+        }
+
+        .active-page {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .mobile {
+            display: none;
+        }
+        .mobile-menu {
+            display: none;
+        }
+        .menu-icon {
+            display: none;
+        }
+        #overlay {
+           display: none;
+        }
+        
+        /* Адаптивность для мобильных устройств */
+        @media (max-width: 768px) {
+            .navbar-content {
+                display: none;
+            }
+
+            .navbar {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 20px;
+                background-color: #e9f5e9;
+                border-bottom: 1px solid #ddd;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                box-sizing: border-box;
+                z-index: 1000;
+            }
+
+            .menu-icon {
+                display: block;
+                cursor: pointer;
+                font-size: 24px;
+            }
+
+            .mobile-menu {
+                display: none;
+                flex-direction: column;
+                position: fixed;
+                top: 0;
+                right: 0;
+                background-color: #e9f5e9;
+                box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+                width: 100%;
+                max-width: 330px;
+                height: 100vh;
+                padding: 40px 0 0;
+                transform: translateX(100%);
+                transition: transform 0.3s ease;
+                z-index: 1000;
+            }
+
+            .mobile-menu.show {
+                display: flex;
+                transform: translateX(0);
+            }
+
+            .mobile-menu.hide {
+                transform: translateX(100%);
+            }
+
+            .mobile-menu a {
+                padding: 20px 15px;
+                text-decoration: none;
+                color: #28a745;
+                font-weight: bold;
+                white-space: nowrap;
+                margin-bottom: 10px;
+                display: block;
+            }
+
+            .mobile-menu span {
+                margin-bottom: 50px;
+                font-size: 20px;
+            }
+
+            .overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                z-index: 999;
+                transition: opacity 0.3s ease;
+                opacity: 0;
+            }
+
+            .overlay.show {
+                display: block;
+                opacity: 1;
+            }
+
+            .navbar .logout-button {
+                background-color: #f44336;
+                color: white;
+                padding: 5px 10px;
+                text-decoration: none;
+                border-radius: 5px;
+                transition: background-color 0.3s ease;
+                margin-top: 150px;
+                margin-bottom: 0px;
+                max-width: 150px;
+                margin-left: 100px;
+            }
+
+            /* Секция с описанием */
+            .description-section {
+                flex-direction: column;
+                padding: 20px;
+                margin-top: 60px;
+            }
+
+            .description-content {
+                flex-direction: column;
+                gap: 20px;
+                align-items: center;
+            }
+    
+            .description-text,
+            .description-image {
+                flex: 1 1 100%;
+                max-width: 100%; 
+            }
+
+            .description-image {
+                height: auto;
+            }
+
+            /* Преимущества */
+            .advantages-section {
+                flex-direction: column;
+                gap: 40px;
+                margin-top: 60px;
+            }
+
+            .advantage-item {
+                align-items: center;
+            }
+
+            .advantage-circle {
+                width: 150px;
+                height: 150px;
+            }
+
+            /* Карточки-рекомендации */
+            .intro-title {
+                font-size: 1.5em;
+                margin-top: 100px;
+                margin-bottom: 30px;
+            }
+
+            .advice-wrapper {
+                padding: 20px;
+            }
+
+            .advice-card {
+                display: flex;
+                padding: 20px;
+                font-size: 0.9em;
+                margin-bottom: 10px;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .advice-icon {
+                font-size: 36px;
+                margin-right: 10px;
+            }
+
+            .pagination button {
+                padding: 10px;
+                font-size: 1.2em;
+                margin: 0 5px;
+            }
+
+            .page-number {
+                font-size: 1.2em;
+                margin: 0 5px;
+            }
+    
+            .desktop {
+                display: none;
+            }
+
+            .mobile {
+            display: block;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo">
+            <a href="{{ url_for('index') }}">
+                <img src="{{ url_for('static', filename='logo.png') }}" alt="Логотип" class="logo-img">
+            </a>
+        </div>
+        <div class="menu-icon" onclick="toggleMenu()"> &#9776; </div>
+        <div class="navbar-content">
+            <a href="#about" class="navbar-link2">О нас</a>
+            <a href="#contacts" class="navbar-link3">Контакты</a>
+            <a href="{{ url_for('favorites') }}" class="navbar-link">Избранное</a>
+            <span>Добро пожаловать, {{ username }}!</span>
+            <a href="{{ url_for('logout') }}" class="logout-button">Выход</a>
+        </div>
+        <div class="mobile-menu" id="mobileMenu">
+            <span>Добро пожаловать, {{ username }}!</span>
+            <div style="border-top: 1px solid #28a745; width: 90%; margin: 5px auto 100px;"></div>
+            <div style="border-top: 1px solid #c4c7c4; width: 100%; margin: 10px 0;"></div>
+            <a href="#about" class="navbar-link">О нас</a>
+            <div style="border-top: 1px solid #c4c7c4; width: 100%; margin: 10px 0;"></div>
+            <a href="#contacts" class="navbar-link">Контакты</a>
+            <div style="border-top: 1px solid #c4c7c4; width: 100%; margin: 10px 0;"></div>
+            <a href="{{ url_for('favorites') }}" class="navbar-link">Избранное</a>
+            <div style="border-top: 1px solid #c4c7c4; width: 100%; margin: 10px 0;"></div>
+            <a href="{{ url_for('logout') }}" class="logout-button">Выход</a>
+            <div style="border-top: 1px solid #28a745; width: 90%; margin: 100px auto 30px;"></div>
+        </div>
+        <div id="overlay" class="overlay"></div>
+    </div>
+    
+    <h1>Интерактивный помощник по уходу за растениями</h1>
+    <p>Загрузите фотографию растения, чтобы получить рекомендации по уходу.</p>
+
+    {% if message %}
+        <p class="message">{{ message }}</p>
+    {% endif %}
+
+    <form action="/" method="post" enctype="multipart/form-data">
+        <div class="upload-container desktop">
+            <i class="fas fa-upload upload-icon"></i>
+            <p class="upload-text">Перетащите изображение сюда или нажмите, чтобы выбрать файл</p>
+            <input type="file" name="file" id="fileInput" accept="image/*">
+        </div>
+    
+        <div class="upload-container mobile">
+            <i class="fas fa-upload upload-icon"></i>
+            <p class="upload-text">Нажмите, чтобы выбрать файл или используйте камеру.</p>
+            <input type="file" name="fileMobile" id="fileInputMobile" accept="image/*" capture="camera">
+        </div>
+    
+        <img id="imagePreview" src="#" alt="Предварительный просмотр изображения" style="display:none;">
+    
+        <div id="loadingIndicator" style="display:none;">
+            <div class="spinner"></div>
+            <p>Идет обработка...</p>
+        </div>
+    
+        <button type="submit" id="uploadButton">Распознать растение</button>
+
+        <div class="description-section" id="about">
+            <div class="description-content">
+                <div class="description-text">
+                    <h2>Узнайте секреты здоровья ваших растений!</h2>
+                    <p>PlantPal – ваш надежный помощник в уходе за комнатными и садовыми растениями. Просто загрузите фотографию своего растения, и мы предоставим вам подробные рекомендации по уходу: от полива и освещения до подкормки и борьбы с вредителями.</p>
+                    <p>Больше никаких увядших листьев и разочарований! С PlantPal ваши растения будут получать необходимый уход, чтобы процветать.</p>
+                </div>
+                <img class="description-image" src="static/plants.jpg" alt="Растения">
+            </div>
+        </div>
+        <div class="advantages-section">
+            <div class="advantage-item">
+                <div class="advantage-circle"><p>Определение растений</p></div>
+                <div class="advantage-description"><p>Узнайте название вашего растения.</p></div>
+            </div>
+            <div class="advantage-item">
+                <div class="advantage-circle"><p>Индивидуальные рекомендации</p></div>
+                <div class="advantage-description"><p>Получите советы по уходу, учитывающие особенности вашего растения.</p></div>
+            </div>
+            <div class="advantage-item">
+                <div class="advantage-circle"><p>Удобный интерфейс</p></div>
+                <div class="advantage-description"><p>Загрузка фото и получение информации в несколько кликов.</p></div>
+            </div>
+        </div>
+        <div class="intro-title">Общие советы по уходу за растениями</div>
+        <div class="advice-wrapper">
+            <div class="advice-container" id="adviceContainer">
+                <div class="advice-card active" data-index="1">
+                    <i class="fas fa-water advice-icon"></i>
+                    <div>
+                        <h3>Совет по поливу</h3>
+                        <p>Поливайте ваши растения, когда верхний слой почвы становится сухим.</p>
+                    </div>
+                </div>
+                <div class="advice-card" data-index="2">
+                    <i class="fas fa-sun advice-icon"></i>
+                    <div>
+                        <h3>Свет для растений</h3>
+                        <p>Убедитесь, что ваши растения получают достаточно света, но избегайте прямых солнечных лучей.</p>
+                    </div>
+                </div>
+                <div class="advice-card" data-index="3">
+                    <i class="fas fa-leaf advice-icon"></i>
+                    <div>
+                        <h3>Удобрение</h3>
+                        <p>Подкармливайте растения удобрениями в период активного роста.</p>
+                    </div>
+                </div>
+                <div class="advice-card" data-index="4">
+                    <i class="fas fa-spa advice-icon"></i>
+                    <div>
+                        <h3>Проветривание</h3>
+                        <p>Регулярно проветривайте помещение, чтобы обеспечить свежий воздух для растений.</p>
+                    </div>
+                </div>
+                <div class="advice-card" data-index="5">
+                    <i class="fas fa-temperature-high advice-icon"></i>
+                    <div>
+                        <h3>Температура</h3>
+                        <p>Следите за температурой в помещении, чтобы избежать резких перепадов.</p>
+                    </div>
+                </div>
+                <div class="advice-card" data-index="6">
+                    <i class="fas fa-paw advice-icon"></i>
+                    <div>
+                        <h3>Защита от вредителей</h3>
+                        <p>Регулярно проверяйте растения на наличие вредителей и болезней.</p>
+                    </div>
+                </div>
+                <div class="advice-card" data-index="7">
+                    <i class="fas fa-seedling advice-icon"></i>
+                    <div>
+                        <h3>Пересадка</h3>
+                        <p>Пересаживайте растения, когда они становятся слишком большими для своего горшка.</p>
+                    </div>
+                </div>
+                <div class="advice-card" data-index="8">
+                    <i class="fas fa-tint advice-icon"></i>
+                    <div>
+                        <h3>Качество воды</h3>
+                        <p>Используйте фильтрованную или отстоянную воду для полива.</p>
+                    </div>
+                </div>
+                <div class="advice-card" data-index="9">
+                    <i class="fas fa-balance-scale advice-icon"></i>
+                    <div>
+                        <h3>Баланс влажности</h3>
+                        <p>Следите за уровнем влажности воздуха, особенно в отопительный сезон.</p>
+                    </div>
+                </div>
+                <div class="advice-card" data-index="10">
+                    <i class="fas fa-clock advice-icon"></i>
+                    <div>
+                        <h3>Регулярный уход</h3>
+                        <p>Регулярно проверяйте растения и удаляйте засохшие листья.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="pagination">
+                <button id="prevButton">&lt;</button>
+                <div class="page-numbers" id="pageNumbers"></div>
+                <button id="nextButton">&gt;</button> 
+            </div>
+        </div>
+        <hr>
+        <span id="contacts">
+            <p1>© 2025 PlantPal. Все права защищены.</p1>
+            <a href="https://github.com/1Polina18/plants.git" target="_blank"><i class="fab fa-github" style="font-size: 28px; color: black;"></i></a>
+            <br>
+            <br>
+            <p1>Контакты: plants@mail.com</p1>
+        </span>    
+    </form>
+<script>
+    // Находим все ссылки с якорями
+    document.addEventListener("DOMContentLoaded", function() {
+    const links = document.querySelectorAll('a[href^="#"]');
+
+    links.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+
+            if (targetElement) {
+                targetElement.scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+});
+
+    // Работа меню
+    function toggleMenu() {
+        const menu = document.getElementById('mobileMenu');
+        const overlay = document.getElementById('overlay');
+        if (menu.classList.contains('show')) {
+            menu.classList.remove('show');
+            menu.classList.add('hide');
+            overlay.classList.remove('show');
+            setTimeout(() => {
+                menu.style.display = 'none';
+                overlay.style.display = 'none';
+            }, 300);
+        } else {
+            menu.style.display = 'flex';
+            overlay.style.display = 'block';
+            setTimeout(() => {
+                menu.classList.remove('hide');
+                menu.classList.add('show');
+                overlay.classList.add('show');
+            }, 10);
+        }
+    }
+
+    // Закрытие меню при нажатии вне его
+    document.addEventListener('click', (event) => {
+        const menu = document.getElementById('mobileMenu');
+        const menuIcon = document.querySelector('.menu-icon');
+        if (!menu.contains(event.target) && !menuIcon.contains(event.target)) {
+            if (menu.classList.contains('show')) {
+                toggleMenu();
+            }
+        }
+    });
+
+    // Индикатор загрузки при отправке формы
+    const fileInputPC = document.getElementById('fileInput');
+    const fileInputMobile = document.getElementById('fileInputMobile');
+    const imagePreview = document.getElementById('imagePreview');
+    const uploadContainerPC = document.querySelector('.upload-container.desktop');
+    const uploadContainerMobile = document.querySelector('.upload-container.mobile');
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    const uploadButton = document.getElementById('uploadButton');
+
+    // Функция для обработки файлов
+    function handleFileSelect(event) {
+        const file = event.target.files[0];
+
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                imagePreview.src = e.target.result;
+                imagePreview.style.display = 'block';
+                uploadContainerPC.style.display = 'none';
+                uploadContainerMobile.style.display = 'none';
+            };
+
+            reader.readAsDataURL(file);
+        } else {
+            imagePreview.style.display = 'none';
+        }
+    }
+
+    fileInputPC.addEventListener('change', handleFileSelect);
+    fileInputMobile.addEventListener('change', handleFileSelect);
+
+    // Обработка отправки формы
+    document.querySelector('form').addEventListener('submit', function(event) {
+        const file = fileInputPC.files[0] || fileInputMobile.files[0];
+
+        if (!file) {
+            event.preventDefault();
+            alert('Пожалуйста, выберите файл перед отправкой.');
+            return;
+        }
+
+        loadingIndicator.style.display = 'block';
+        uploadButton.disabled = true;
+    });
+
+    fileInputMobile.addEventListener('change', function(event) {
+        console.log('Файл выбран на мобильном устройстве');
+        handleFileSelect(event);
+    });
+   
+    function showCard(index) {
+        const cards = document.querySelectorAll('.advice-card');
+
+        cards.forEach((card, i) => {
+            card.style.display = (i === index) ? 'flex' : 'none';
+        });
+
+        updateActivePageNumber(index);
+    }
+
+    // Карточки-рекомендации
+    const cards = document.querySelectorAll('.advice-card');
+    let currentIndex = 0;
+    const pageNumbersContainer = document.getElementById('pageNumbers');
+    const pageNumbers = [];
+
+    function initPagination() {
+        for (let i = 0; i < cards.length; i++) {
+            const pageNumber = document.createElement('span');
+            pageNumber.className = 'page-number';
+            pageNumber.textContent = i + 1;
+
+            pageNumber.addEventListener('click', () => {
+                currentIndex = i;
+                showCard(currentIndex);
+            });
+
+            pageNumbersContainer.appendChild(pageNumber);
+            pageNumbers.push(pageNumber);
+        }
+    }
+
+    function updateActivePageNumber(index) {
+        pageNumbers.forEach((pageNumber, i) => {
+            if (i === index) {
+                pageNumber.classList.add('active-page');
+            } else {
+                pageNumber.classList.remove('active-page');
+            }
+        });
+    }
+
+    // Обработчик события для кнопки "Вперед"
+    document.getElementById('nextButton').addEventListener('click', (event) => {
+        event.preventDefault();
+        currentIndex = (currentIndex + 1) % cards.length;
+        showCard(currentIndex);
+    });
+
+    // Обработчик события для кнопки "Назад"
+    document.getElementById('prevButton').addEventListener('click', (event) => {
+        event.preventDefault();
+        currentIndex = (currentIndex - 1 + cards.length) % cards.length;
+        showCard(currentIndex);
+    });
+
+    showCard(currentIndex);
+    initPagination();
+</script>
+</body>
+</html>

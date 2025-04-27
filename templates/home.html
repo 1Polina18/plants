@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Интерактивный помощник по уходу за растениями</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="/static/icon.png" type="image/icon">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            text-align: center;
+            margin-top: 50px;
+            background-color: #f8f9fa;
+            color: #343a40;
+            margin-top: 120px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #28a745;
+            margin-bottom: 70px;
+            animation: fadeIn 1s ease-in-out;
+            font-size: 2.5em;
+        }
+
+        p {
+            font-size: 1.1em;
+        }
+
+        p1 {
+            font-size: 0.9em;
+            color: #5c6064;
+        }
+
+        hr {
+            border: none;
+            height: 1px;
+            background-color: rgba(204, 204, 204, 0.5);
+            margin-top: 60px;
+            margin-bottom: 10px;
+            width: 70%;
+        }
+
+        ul li {
+            font-size: 1.1em;
+            color: #343a40;
+        }
+
+        ul li strong {
+            font-weight: bold;
+            color: inherit;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .upload-container {
+            border: 2px dashed #ced4da;
+            padding: 30px;
+            margin: 20px auto;
+            max-width: 400px;
+            cursor: pointer;
+            position: relative;
+            border-radius: 10px;
+        }
+
+        .upload-container:hover {
+            border-color: #28a745;
+        }
+
+        #fileInput {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            color: #ced4da;
+            margin-bottom: 10px;
+        }
+
+        .upload-text {
+            font-size: 16px;
+            color: #6c757d;
+        }
+
+        button {
+            padding: 12px 25px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .message {
+            color: #dc3545;
+            margin-bottom: 15px;
+        }
+
+        #imagePreview {
+            max-width: 300px;
+            margin: 20px auto;
+            display: none;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #loadingIndicator {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #28a745;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Меню */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: #e9f5e9;
+            border-bottom: 1px solid #ddd;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            box-sizing: border-box; 
+            z-index: 1000;
+        }
+
+        .navbar * {
+            box-sizing: border-box;
+        }
+
+        .logo-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .logo {
+            max-width: 200px;
+        }
+        
+        .logo-img {
+            height: 44px;
+        }
+
+        /* Секция с описанием */
+        .description-section {
+            background-color: #e9f5e9;
+            padding: 0px;
+            margin-top: 80px;
+            text-align: center;
+            display: flex;
+            align-items: stretch;
+        }
+        .description-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 70px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .description-text {
+            flex: 1 1 50%;
+            text-align: left;
+            max-width: 50%;
+        }
+        
+        .description-image {
+            flex: 0 0 50%;
+            max-width: 50%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        h2 {
+            color: #28a745;
+            margin-bottom: 10px;
+        }
+
+        /* Преимущества */
+        .advantages-section {
+            margin-top: 150px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            width: 100%;         
+            max-width: 1200px;   
+            margin: 120px auto 0;
+            gap: 120px; 
+        }
+        
+        .advantage-item {
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            flex: 1;
+            text-align: center;
+            height: 300px;
+        }
+        
+        .advantage-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 2px solid #28a745;
+            color: #343a40;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-align: center;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        
+        .advantage-description {
+            text-align: center;
+            font-size: 1em;
+            color: #343a40;
+        }
+
+        /* Карточки-рекомендации */
+        .intro-title {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 60px;
+            margin-top: 100px;
+            color: #218838;
+        }
+        
+        .advice-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #e0f7e0;
+            padding: 40px;
+            border-radius: 8px;
+        }
+
+        .advice-container {
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 20px;
+        }
+
+        .advice-card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.0em;
+        }
+
+        .advice-card.active {
+            display: flex;
+            align-items: center;
+        }
+
+        .advice-icon {
+            font-size: 42px;
+            color: #28a745;
+            margin-right: 15px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .pagination button {
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5em;
+            margin: 0 10px;
+        }
+
+        .pagination .page-numbers {
+            display: flex;
+            align-items: center;
+        }
+
+        .page-number {
+            margin: 0 10px;
+            font-size: 1.5em;
+            cursor: pointer;
+        }
+
+        .active-page {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin: 10px;
+        }
+        
+        .btn-primary {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background-color: #17a2b8;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #138496;
+            transform: translateY(-2px);
+        }
+
+        /* Адаптивность для мобильных устройств */
+        @media (max-width: 768px) {
+            .navbar {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 10px;
+                align-items: center;    
+                justify-content: center;
+            }
+
+            .navbar .logo {
+                margin-bottom: 10px;
+            }
+
+            /* Секция с описанием */
+            .description-section {
+                flex-direction: column;
+                padding: 20px;
+                margin-top: 60px;
+            }
+
+            .description-content {
+                flex-direction: column;
+                gap: 20px;
+                align-items: center;
+            }
+    
+            .description-text,
+            .description-image {
+                flex: 1 1 100%;
+                max-width: 100%; 
+            }
+
+            .description-image {
+                height: auto;
+            }
+
+            /* Преимущества */
+            .advantages-section {
+                flex-direction: column;
+                gap: 40px;
+                margin-top: 60px;
+            }
+
+            .advantage-item {
+                align-items: center;
+            }
+
+            .advantage-circle {
+                width: 150px;
+                height: 150px;
+            }
+
+            /* Карточки-рекомендации */
+            .intro-title {
+                font-size: 1.5em;
+                margin-top: 100px;
+                margin-bottom: 30px;
+            }
+
+            .advice-wrapper {
+                padding: 20px;
+            }
+
+            .advice-card {
+                display: flex;
+                padding: 20px;
+                font-size: 0.9em;
+                margin-bottom: 10px;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .advice-icon {
+                font-size: 36px;
+                margin-right: 10px;
+            }
+
+            .pagination button {
+                padding: 10px;
+                font-size: 1.2em;
+                margin: 0 5px;
+            }
+
+            .page-number {
+                font-size: 1.2em; 
+                margin: 0 5px;
+            }  
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo-container">
+            <a href="{{ url_for('home') }}">
+                <img src="{{ url_for('static', filename='logo.png') }}" alt="Логотип" class="logo-img">
+            </a>
+        </div>
+        <div class="site-info"></div>
+    </div>
+
+    <div class="container mt-5">
+        <h1>Добро пожаловать!</h1>
+        <a class="btn btn-primary" href="{{ url_for('register') }}">Регистрация</a>
+        <a class="btn btn-secondary" href="{{ url_for('login') }}">Авторизация</a>
+    </div>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
+        <div class="alert alert-info">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <form action="/" method="post" enctype="multipart/form-data">
+        <div class="description-section">
+            <div class="description-content">
+                <div class="description-text">
+                    <h2>Узнайте секреты здоровья ваших растений!</h2>
+                    <p>PlantPal – ваш надежный помощник в уходе за комнатными и садовыми растениями. Просто загрузите фотографию своего растения, и мы предоставим вам подробные рекомендации по уходу: от полива и освещения до подкормки и борьбы с вредителями.</p>
+                    <p>Больше никаких увядших листьев и разочарований! С PlantPal ваши растения будут получать необходимый уход, чтобы процветать.</p>
+                </div>
+                <img class="description-image" src="static/plants.jpg" alt="Растения">
+            </div>
+        </div>
+
+        <div class="advantages-section">
+            <div class="advantage-item">
+                <div class="advantage-circle"><p>Определение растений</p></div>
+                <div class="advantage-description"><p>Узнайте название вашего растения.</p></div>
+            </div>
+            <div class="advantage-item">
+                <div class="advantage-circle"><p>Индивидуальные рекомендации</p></div>
+                <div class="advantage-description"><p>Получите советы по уходу, учитывающие особенности вашего растения.</p></div>
+            </div>
+            <div class="advantage-item">
+                <div class="advantage-circle"><p>Удобный интерфейс</p></div>
+                <div class="advantage-description"><p>Загрузка фото и получение информации в несколько кликов.</p></div>
+            </div>
+        </div>
+
+        <div class="intro-title">Общие советы по уходу за растениями</div>
+        <div class="advice-wrapper">
+            <div class="advice-container" id="adviceContainer">
+                <div class="advice-card active" data-index="1">
+                    <i class="fas fa-water advice-icon"></i>
+                    <div>
+                        <h3>Совет по поливу</h3>
+                        <p>Поливайте ваши растения, когда верхний слой почвы становится сухим.</p>
+                    </div>
+                </div>
+                <div class="advice-card" data-index="2">
+                    <i class="fas fa-sun advice-icon"></i>
+                    <div>
+                        <h3>Свет для растений</h3>
+                        <p>Убедитесь, что ваши растения получают достаточно света, но избегайте прямых солнечных лучей.</p>
+                    </div>
+                </div>
+                <div class="advice-card" data-index="3">
+                    <i class="fas fa-leaf advice-icon"></i>
+                    <div>
+                        <h3>Удобрение</h3>
+                        <p>Подкармливайте растения удобрениями в период активного роста.</p>
+                    </div>
+                </div>
+                <div class="advice-card" data-index="4">
+                    <i class="fas fa-spa advice-icon"></i>
+                    <div>
+                        <h3>Проветривание</h3>
+                        <p>Регулярно проветривайте помещение, чтобы обеспечить свежий воздух для растений.</p>
+                    </div>
+                </div>
+                <div class="advice-card" data-index="5">
+                    <i class="fas fa-temperature-high advice-icon"></i>
+                    <div>
+                        <h3>Температура</h3>
+                        <p>Следите за температурой в помещении, чтобы избежать резких перепадов.</p>
+                    </div>
+                </div>
+                <div class="advice-card" data-index="6">
+                    <i class="fas fa-paw advice-icon"></i>
+                    <div>
+                        <h3>Защита от вредителей</h3>
+                        <p>Регулярно проверяйте растения на наличие вредителей и болезней.</p>
+                    </div>
+                </div>
+                <div class="advice-card" data-index="7">
+                    <i class="fas fa-seedling advice-icon"></i>
+                    <div>
+                        <h3>Пересадка</h3>
+                        <p>Пересаживайте растения, когда они становятся слишком большими для своего горшка.</p>
+                    </div>
+                </div>
+                <div class="advice-card" data-index="8">
+                    <i class="fas fa-tint advice-icon"></i>
+                    <div>
+                        <h3>Качество воды</h3>
+                        <p>Используйте фильтрованную или отстоянную воду для полива.</p>
+                    </div>
+                </div>
+                <div class="advice-card" data-index="9">
+                    <i class="fas fa-balance-scale advice-icon"></i>
+                    <div>
+                        <h3>Баланс влажности</h3>
+                        <p>Следите за уровнем влажности воздуха, особенно в отопительный сезон.</p>
+                    </div>
+                </div>
+                <div class="advice-card" data-index="10">
+                    <i class="fas fa-clock advice-icon"></i>
+                    <div>
+                        <h3>Регулярный уход</h3>
+                        <p>Регулярно проверяйте растения и удаляйте засохшие листья.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="pagination">
+                <button id="prevButton">&lt;</button>
+                <div class="page-numbers" id="pageNumbers"></div>
+                <button id="nextButton">&gt;</button> 
+            </div>
+        </div>
+        <hr>
+        <span id="contacts"> <!-- Секция "Контакты" -->
+            <p1>© 2025 PlantPal. Все права защищены.</p1>
+            <a href="https://github.com/1Polina18/plants.git" target="_blank"><i class="fab fa-github" style="font-size: 28px; color: black;"></i></a>
+            <br>
+            <br>  <!-- Добавляем разрыв строки -->
+            <p1>Контакты: plants@mail.com</p1>
+        </span> 
+    </form>
+<script>
+    // Функция для отображения карточки по индексу
+    function showCard(index) {
+        const cards = document.querySelectorAll('.advice-card');
+        cards.forEach((card, i) => {
+            card.classList.remove('active');
+            if (i === index) {
+                card.classList.add('active');
+            }
+        });
+    }
+
+    const cards = document.querySelectorAll('.advice-card');
+    let currentIndex = 0;
+    const pageNumbersContainer = document.getElementById('pageNumbers');
+    const pageNumbers = [];
+
+    function showCard(index) {
+        cards.forEach((card, i) => {
+            card.style.display = (i === index) ? 'flex' : 'none';
+        });
+
+        updateActivePageNumber(index);
+    }
+
+    function initPagination() {
+        for (let i = 0; i < cards.length; i++) {
+            const pageNumber = document.createElement('span');
+            pageNumber.className = 'page-number';
+            pageNumber.textContent = i + 1;
+            pageNumber.addEventListener('click', () => {
+                currentIndex = i;
+                showCard(currentIndex);
+            });
+            pageNumbersContainer.appendChild(pageNumber);
+            pageNumbers.push(pageNumber);
+        }
+    }
+
+    function updateActivePageNumber(index) {
+        pageNumbers.forEach((pageNumber, i) => {
+            if (i === index) {
+                pageNumber.classList.add('active-page');
+            } else {
+                pageNumber.classList.remove('active-page');
+            }
+        });
+    }
+
+    // Обработчик события для кнопки "Вперед"
+    document.getElementById('nextButton').addEventListener('click', (event) => {
+        event.preventDefault();
+        currentIndex = (currentIndex + 1) % cards.length;
+        showCard(currentIndex);
+    });
+
+    // Обработчик события для кнопки "Назад"
+    document.getElementById('prevButton').addEventListener('click', (event) => {
+        event.preventDefault();
+        currentIndex = (currentIndex - 1 + cards.length) % cards.length;
+        showCard(currentIndex);
+    });
+
+    showCard(currentIndex);
+    initPagination();
+</script>
+</body>
+</html>
