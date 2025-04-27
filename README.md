@@ -15,32 +15,3 @@
 #### •  requirements.txt: Этот файл содержит список всех пакетов Python, необходимых для запуска системы распознавания растений. Он может быть использован для установки зависимостей с помощью pip install -r requirements.txt.
 
 
-## Установка
-
-1. Клонируйте репозиторий:
-   ```bash
-   git clone https://github.com/ваш_логин/plants.git
-   cd plants
-
-2. Создайте виртуальное окружение:
-   ```bash
-   python -m venv .venv
-
-3. Активируйте виртуальное окружение:
-   3.1. На Windows:
-      ```bash
-      .venv\Scripts\activate
-   3.2. На macOS/Linux:
-      ```bash
-      source .venv/bin/activate
-
-4. Установите зависимости:
-   ```bash
-   pip install -r requirements.txt
-
-5. Запустите сайт:
-   ```bash
-   python app.py
-
-6. Откройте веб-браузер и перейдите по адресу http://127.0.0.1:5000.
-   
