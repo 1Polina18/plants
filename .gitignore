@@ -2,4 +2,3 @@ __pycache__/
 .venv/
 uploads/
 app.log
-plant_recognition_model.keras
