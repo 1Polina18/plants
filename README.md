@@ -42,7 +42,7 @@ cd <имя_каталога>
 python -m venv .venv
 ```
 
-Активируйте виртуальное окружение на Windows::
+Активируйте виртуальное окружение на Windows:
 
 ```
 .venv\Scripts\activate
