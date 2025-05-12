@@ -51,7 +51,7 @@ python -m venv .venv
 На macOS и Linux:
 
 ```
-source venv/bin/activate
+source .venv/bin/activate
 ```
 
 4. Чтобы установить зависимости, выполните команду:
