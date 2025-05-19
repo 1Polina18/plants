@@ -65,5 +65,5 @@ pip install -r requirements.txt
 Запустите веб-приложение с помощью:
 
 ```
-python app.py
+flask --app app  run
 ```
