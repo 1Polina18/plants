@@ -319,6 +319,38 @@
             display: none;
         }
 
+        /* Адаптивные стили */
+        @media (max-width: 1620px) {
+            .navbar-content {
+                justify-content: space-between;
+                flex-wrap: wrap;
+            }
+
+            .navbar-link,
+            .navbar-link2,
+            .navbar-link3 {
+                margin-right: 20px; 
+                transform: translateX(-550px);
+            }
+
+            .logout-button {
+                margin-left: auto;
+            }
+
+            .back-button {
+                margin-right: 650px;
+                padding: 10px 20px; 
+       
+            }
+
+            .back-button2 {
+                 margin-left: 150px;
+                padding: 10px 20px; 
+                display: inline-block; 
+                margin-right: 10px;
+            }
+        }
+
         /* Адаптивность для мобильных устройств */
         @media (max-width: 768px) {
             .button-container.from-favorites {
@@ -433,6 +465,14 @@
                 margin-bottom: 0px;
                 max-width: 150px;
                 margin-left: 100px;
+            }
+
+            .navbar-link,
+            .navbar-link2,
+            .navbar-link3 {
+                margin-left: 0;
+                transform: none;
+                text-align: left;
             }
 
             .plant-info {

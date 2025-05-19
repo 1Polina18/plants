@@ -236,6 +236,25 @@
             background-color: #c62828;
         }
 
+        /* Адаптивные стили */
+        @media (max-width: 1620px) {
+            .navbar-content {
+                justify-content: space-between;
+                flex-wrap: wrap;
+            }
+
+            .navbar-link,
+            .navbar-link2,
+            .navbar-link3 {
+                margin-right: 20px;
+                transform: translateX(-550px);
+            }
+        
+            .logout-button {
+                margin-left: auto;
+            }
+        }
+        
         /* Секция с описанием */
         .description-section {
             background-color: #e9f5e9;
@@ -494,6 +513,15 @@
             .overlay.show {
                 display: block;
                 opacity: 1;
+            }
+
+
+            .navbar-link,
+            .navbar-link2,
+            .navbar-link3 {
+                margin-left: 0;
+                transform: none;
+                text-align: left;
             }
 
             .navbar .logout-button {

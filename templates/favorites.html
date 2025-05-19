@@ -283,6 +283,25 @@
             align-items: center;
         }
 
+        /* Адаптивные стили */
+        @media (max-width: 1620px) {
+            .navbar-content {
+                justify-content: space-between;
+                flex-wrap: wrap;
+            }
+
+            .navbar-link,
+            .navbar-link2,
+            .navbar-link3 {
+                margin-right: 20px; 
+                transform: translateX(-550px);
+            }
+
+            .logout-button {
+                margin-left: auto;
+            }
+        }
+
         /* Адаптивность для мобильных устройств */
         @media (max-width: 768px) {
             .plant-number {
@@ -417,6 +436,14 @@
                 max-width: 150px;
                 margin-left: 100px;
             }
+
+            .navbar-link,
+            .navbar-link2,
+            .navbar-link3 {
+                margin-left: 0;
+                transform: none;
+                text-align: left;
+            }
         }
     </style>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -458,35 +485,35 @@
         <p>На этой странице вы можете увидеть список ваших избранных растений. Вы можете просмотреть информацию о каждом растении, а также удалить его из списка избранных, если это необходимо.</p>
        </div>
 
-       {% if plants %}
-       <ul class="favorites-list">
-           {% for plant in plants %}
-           <li class="favorites-item">
-               <div class="favorites-item-content">
-                   <span class="plant-number">{{ loop.index }}</span>
-                   
-                   <div class="plant-info">
-                        {% if plant[1] == "алоэ вера" %}
-                        <img src="{{ url_for('send_data', plant_name='алоэ вера', filename='алоэ вера растение_35.jpg') }}" alt="{{ plant.name }}" class="plant-image">
-                        {% else %}
-                        <img src="{{ url_for('send_data', plant_name=plant[1], filename=plant[1] + '_1.jpg') }}" alt="{{ plant.name }}" class="plant-image">
-                        {% endif %}
+{% if plants %}
+    <ul class="favorites-list">
+        {% for plant in plants %}
+            <li class="favorites-item">
+                <div class="favorites-item-content">
+                    <span class="plant-number">{{ loop.index }}</span>
                     
-                        <a href="{{ url_for('result', plant_name=plant[1], image_path=plant[3], from_favorites=True) }}" class="plant-link" style="text-decoration: none; display: flex; align-items: center; width: 100%; min-height: 100px;">
-                            <span style="font-size: 1.5em; margin-right: 10px;">{{ plant[1] }}</span>
+                    <div class="plant-info">
+                        {% set plant_name = plant[1] %}
+                        {% set image_name = plant_name ~ '_1.jpg' %}  {# Формируем имя файла #}
+                        {% set image_path = url_for('static', filename='favorites_plants/' ~ image_name) %} {# Указываем путь к изображению #}
+                        
+                        <img src="{{ image_path }}" alt="{{ plant_name }}" class="plant-image" onerror="this.onerror=null; this.src='default_image.jpg';"> {# Добавляем обработчик ошибок для изображений #}
+                        
+                        <a href="{{ url_for('result', plant_name=plant_name, image_path=plant[3], from_favorites=True) }}" class="plant-link" style="text-decoration: none; display: flex; align-items: center; width: 100%; min-height: 100px;">
+                            <span style="font-size: 1.5em; margin-right: 10px;">{{ plant_name }}</span>
                             <div style="border-left: 1px solid #28a745; height: 60px; margin: 0 10px;"></div>
                             <span style="flex: 1; word-wrap: break-word; min-height: 60px;">{{ plant[2][:130] }}{{ '...' if plant[2]|length > 130 else '' }}</span>
                         </a>
-                   </div>
+                    </div>
 
-                   <form action="{{ url_for('remove_from_favorites') }}" method="post" style="display:inline;">
-                       <input type="hidden" name="plant_id" value="{{ plant[0] }}">
-                       <button type="submit" class="remove-button" onclick="return confirm('Вы уверены, что хотите удалить это растение из избранного?');">Удалить из избранного</button>
-                   </form>
-               </div>
+                    <form action="{{ url_for('remove_from_favorites') }}" method="post" style="display:inline;">
+                        <input type="hidden" name="plant_id" value="{{ plant[0] }}">
+                        <button type="submit" class="remove-button" onclick="return confirm('Вы уверены, что хотите удалить это растение из избранного?');">Удалить из избранного</button>
+                    </form>
+                </div>
             </li>
-           {% endfor %}
-       </ul>
+        {% endfor %}
+    </ul>
 
        {% else %}
            <p class="no-favorites-message">У вас нет избранных растений.</p>
