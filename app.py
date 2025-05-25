@@ -15,6 +15,9 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from functools import wraps
 from flask_wtf import FlaskForm
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
